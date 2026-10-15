@@ -34,6 +34,7 @@ const logs = []; const orig = { log: console.log, error: console.error, warn: co
 const quiet = () => { console.log = (...a) => logs.push(a); console.error = (...a) => logs.push(a); console.warn = (...a) => logs.push(a); };
 const loud = () => Object.assign(console, orig);
 
+check("deployed live model is Gemma 4 26B", CONFIG.liveModel === "@cf/google/gemma-4-26b-a4b-it");
 CONFIG.liveModel = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 quiet();
 // origin, method, headers

@@ -182,14 +182,15 @@
     "jobs": [
      {
       "job_type": "drain",
-      "urgency": "routine"
+      "urgency": "soon"
      }
     ],
     "name": "Hannah Weber",
     "phone": "519-555-0148",
     "address": "52 Victoria St S, Kitchener",
     "missing": []
-   }
+   },
+   "label_note": "2026-10-15: urgency label corrected from routine to soon. The published rule says a slow drain is soon, and e04's slow drain was already labelled soon. Corrected after the first capture run."
   },
   {
    "id": "e13-xss-formula",

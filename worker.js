@@ -7,8 +7,7 @@
 // ---------------------------------------------------------------------------
 const CONFIG = {
   allowedOrigin: "https://casimbahadar.github.io",
-  // Chosen by the eval run on 2026-10-15. To change it without editing code, add a plain-text variable
-  // named LIVE_MODEL in the Worker's settings: a model id from the list below, or "off" to stop live mode.
+  // Chosen after the eval run. Empty means live mode is switched off.
   liveModel: "@cf/google/gemma-4-26b-a4b-it",
   // Models the private capture page may run.
   captureModels: ["@cf/meta/llama-3.3-70b-instruct-fp8-fast", "@cf/google/gemma-4-26b-a4b-it"],
@@ -227,16 +226,6 @@ function sameSecret(a, b) {
 
 export default {
   async fetch(request, env) {
-    // Anything unexpected becomes a typed error the page can explain, with CORS so the browser can read it.
-    try { return await handle(request, env); }
-    catch (e) {
-      const origin = request.headers.get("Origin");
-      return fail(500, "model_unavailable", origin === CONFIG.allowedOrigin ? origin : null, { detail: "worker_error" });
-    }
-  }
-};
-
-async function handle(request, env) {
     const origin = request.headers.get("Origin");
     const allowed = origin === CONFIG.allowedOrigin;
     if (request.method === "OPTIONS") return allowed ? new Response(null, { status: 204, headers: cors(origin) }) : new Response(null, { status: 403 });
@@ -258,8 +247,7 @@ async function handle(request, env) {
 
     const path = new URL(request.url).pathname;
     const capture = path === "/capture";
-    const override = typeof env.LIVE_MODEL === "string" ? env.LIVE_MODEL.trim() : "";
-    let model = override === "off" ? "" : override && CONFIG.models[override] ? override : CONFIG.liveModel;
+    let model = CONFIG.liveModel;
     if (capture) {
       if (!sameSecret(request.headers.get("X-Capture-Key") || "", env.CAPTURE_KEY || "")) return fail(401, "bad_request", origin, { detail: "capture_key" });
       if (!CONFIG.captureModels.includes(body.model)) return fail(400, "bad_request", origin, { detail: "model" });
@@ -287,5 +275,6 @@ async function handle(request, env) {
     if (capture) meta.raw_attempts = out.attempts;
     if (out.error) return fail(out.error === "daily_allowance_used" ? 429 : out.error === "model_unavailable" ? 503 : 502, out.error, origin, meta);
     return reply(200, Object.assign({ ok: true, result: out.result }, meta), origin);
-}
+  }
+};
 

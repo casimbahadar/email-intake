@@ -2,7 +2,7 @@
 
 An AI model reads a customer email sent to Cedar & Copper Plumbing, a made-up company, and drafts job tickets. Then code checks that every field the model found is really in the email. Anything it can't find in the email is shown as "Not found in the text", never as the model's guess.
 
-Live: https://casimbahadar.github.io/demo-email-intake/
+Live: https://casimbahadar.github.io/email-intake/
 
 ## What a visitor sees
 
@@ -56,7 +56,7 @@ Sources: https://developers.cloudflare.com/workers-ai/platform/pricing/ and http
 
 ## Running it
 
-- **Turn live mode off or switch models without editing code:** in the Worker's settings, add a plain-text variable named `LIVE_MODEL`. Set it to `off` to stop live mode, or to one of the model ids listed at the top of `worker.js`. Delete the variable to go back to the default.
+- **Turn live mode off or switch models:** in the Cloudflare Workers editor, line 11 of `worker.js` reads `liveModel: "@cf/google/gemma-4-26b-a4b-it",`. Put a different model id from the list below it between the quotes, or empty the quotes (`""`) to switch live mode off, then deploy. Watch for a stray line break when pasting on a phone: the line must stay on one line, and the error count at the bottom of the editor should read 0 before you deploy.
 - **Replace the Worker code from a phone:**
   1. Open `worker.js` in this repo on GitHub, tap Raw, then press and hold the text and choose Select All, then Copy.
   2. In the Cloudflare Workers editor, select all the old code, paste, and deploy.
